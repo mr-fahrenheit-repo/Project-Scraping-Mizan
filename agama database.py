@@ -201,4 +201,4 @@ for x in productlinks:
 df = pd.DataFrame(product)
 
 # Export dataframe into 
-df.to_csv("biografi_DB.csv")
+df.to_csv("Agama_DB.csv")
