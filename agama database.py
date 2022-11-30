@@ -74,8 +74,8 @@ for x in productlinks:
         
     # scrape product stock
     try : 
-        if soup.find("a", class_="btn-1 sm shadow-0" ).text ==  "produk tidak tersedia":
-            stok = "0"
+        if soup.find("a", class_="btn-1 sm shadow-0" ).text == "produk tidak tersedia":
+            stok = "kosong"
         else:
             stok = soup.find("a", class_="btn-1 sm shadow-0" ).text
     except:
@@ -186,19 +186,19 @@ for x in productlinks:
     product.append(data)
     
     # Downloading the image 
-    try:
-        pic = requests.get(foto, stream = True)
-    except:
-        pic = "Not Found"
+    # try:
+    #     pic = requests.get(foto, stream = True)
+    # except:
+    #     pic = "Not Found"
     
-    if pic != "Not Found":
-        try:
-            open(f"{judul}.jpg", 'wb').write(pic.content)
-        except:
-            judul = re.sub('\W+','', judul)
-            open(f"{judul}.jpg", 'wb').write(pic.content)
-    else:
-        pass
+    # if pic != "Not Found":
+    #     try:
+    #         open(f"{judul}.jpg", 'wb').write(pic.content)
+    #     except:
+    #         judul = re.sub('\W+','', judul)
+    #         open(f"{judul}.jpg", 'wb').write(pic.content)
+    # else:
+    #     pass
     
     # Progress Information
     print(f"progress : {len(product)}")
