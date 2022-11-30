@@ -186,13 +186,19 @@ for x in productlinks:
     product.append(data)
     
     # Downloading the image 
-    pic = requests.get(foto, stream = True)
-    
     try:
-        open(f"{judul}.jpg", 'wb').write(pic.content)
+        pic = requests.get(foto, stream = True)
     except:
-        judul = re.sub('\W+','', judul)
-        open(f"{judul}.jpg", 'wb').write(pic.content)
+        pic = "Not Found"
+    
+    if pic != "Not Found":
+        try:
+            open(f"{judul}.jpg", 'wb').write(pic.content)
+        except:
+            judul = re.sub('\W+','', judul)
+            open(f"{judul}.jpg", 'wb').write(pic.content)
+    else:
+        pass
     
     # Progress Information
     print(f"progress : {len(product)}")
