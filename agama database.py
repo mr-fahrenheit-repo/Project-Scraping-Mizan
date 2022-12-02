@@ -7,6 +7,7 @@ import pandas as pd
 import re
 import socket
 import time
+import random
 
 # Configuring socket for scraping
 socket.getaddrinfo('localhost', 8080)
@@ -16,18 +17,20 @@ productlinks = set()
 
 # Fetch loop to get product link on every page
 for i in range(0,1400,20):
-    # page url
+    # page url 
     baseurl = f"https://mizanstore.com/kategoriproduk/556_agama_dan_spiritualitas/{i}"
     
     # Configuring selenium webdriver
     chrome_options = webdriver.ChromeOptions()
     chrome_options.add_argument("--headless")
-    service = Service('chromedriver.exe')
+    service = Service(r'C:\Users\ashar\Documents\GitHub\Project-Scraping-Mizan\chromedriver.exe')
     driver = webdriver.Chrome(service = service, options= chrome_options)
     
     # Getting the page source from url
     driver.get(baseurl)
-    time.sleep(5)
+    time.sleep(random.randrange(3, 7))
+    driver.execute_script("window.scrollTo(0, 500)")
+    time.sleep(random.randrange(1, 3))
     content = driver.page_source
     soup = BeautifulSoup(content, 'html.parser')
     
@@ -52,11 +55,14 @@ for x in productlinks:
     # Configuring selenium webdriver
     chrome_options = webdriver.ChromeOptions()
     chrome_options.add_argument("--headless")
-    service = Service('chromedriver.exe')
+    service = Service(r'C:\Users\ashar\Documents\GitHub\Project-Scraping-Mizan\chromedriver.exe')
     driver = webdriver.Chrome(service = service, options= chrome_options)
     
     # Getting the page source from url
     driver.get(url)
+    time.sleep(random.randrange(3, 7))
+    driver.execute_script("window.scrollTo(0, 500)")
+    time.sleep(random.randrange(1, 3)) 
     content = driver.page_source
     soup = BeautifulSoup(content, 'html.parser')
     
@@ -64,105 +70,105 @@ for x in productlinks:
     try:
         judul = soup.find(id="tag_judul").text
     except:
-        judul = "undefined"
+        judul = ""
     
     # scrape product description
     try:
         deskripsi = soup.find(id="desk").text.strip()
     except:
-        deskripsi = "undefined"
+        deskripsi = ""
         
     # scrape product stock
     try : 
         if soup.find("a", class_="btn-1 sm shadow-0" ).text == "produk tidak tersedia":
-            stok = "kosong"
+            stok = ""
         else:
             stok = soup.find("a", class_="btn-1 sm shadow-0" ).text
     except:
-        stok = "undefined"
+        stok = ""
     
     # scrape product retail price 
     try:
         harga_retail = soup.find('strong' , class_="harga-discount").text
     except:
-        harga_retail = "undefined"
+        harga_retail = ""
         
     # scrape product retail price after discount
     try:
         harga = soup.find('strong' , style="color:#ff8401;").text
     except:
-        harga = "undefined"
+        harga = ""
     
     # scrape product specification
     try: 
         spesifikasi = soup.find("table", class_="table table-striped").text
     except: 
-        spesifikasi = "undefined"
+        spesifikasi = ""
     
     # Getting ISBN detail from product specification
-    if spesifikasi != "undefined":
+    if spesifikasi != "":
         try:
             ISBN = spesifikasi[spesifikasi.find("ISBN")+4:spesifikasi.find("Berat")].strip()
         except : 
-            ISBN = "undefined"
+            ISBN = ""
     else:
-        ISBN = "undefined"
+        ISBN = ""
     
     # Getting product weight from product specification
-    if spesifikasi != "undefined":
+    if spesifikasi != "":
         try:
             berat = spesifikasi[spesifikasi.find("Berat")+5:spesifikasi.find("Dimensi")].strip()
         except:
-            berat = "undefined"
+            berat = ""
     else:
-        berat = "undefined"
+        berat = ""
     
     # Getting product dimension from product specification
-    if spesifikasi != "undefined":
+    if spesifikasi != "":
         try:
             dimensi = spesifikasi[spesifikasi.find("(P/L/T)")+7:spesifikasi.find("Halaman")].strip()
         except:
-            dimensi = "undefined"
+            dimensi = ""
     else:
-        dimensi = "undefined"
+        dimensi = ""
     
     # Getting product page detail from product specification
-    if spesifikasi != "undefined":
+    if spesifikasi != "":
         try:
             halaman = spesifikasi[spesifikasi.find("Halaman")+7:spesifikasi.find("Jenis")].strip()
         except:
-            halaman = "undefined"
+            halaman = ""
     else:
-        halaman = "undefined"
+        halaman = ""
     
     
     # Getting product cover detail from product specification
-    if spesifikasi != "undefined":
+    if spesifikasi != "":
         try :
             cover = spesifikasi[spesifikasi.find("Jenis Cover")+11:spesifikasi.find("Jenis Cover")+22].strip()
         except:
-            cover = "undefined"
+            cover = ""
     else:
-        cover = "undefined"
+        cover = ""
     
     # Getting product photo's link
     try:
         link_foto = soup.find("script", type="application/ld+json").text
         foto = link_foto[link_foto.find('https'):link_foto.find('.jpg')+4]
     except:
-        foto = "undefined"
+        foto = ""
     
     # Getting product's author
     try:
         penerbit = soup.find('strong', style="color:#ff8401; margin-left:5px;").text
     except:
-        penerit = "undefined"
+        penerit = ""
     
     # Getting product's publisher
     try:
         pengarang= soup.find('strong', style="color:#ff8401; margin-right:5px;").text
     except:
-        penerbit = "undefined"
+        penerbit = ""
 
     # Add all of the product information to dictionary
     data = {
@@ -185,7 +191,7 @@ for x in productlinks:
     # add the product dictionary into product list
     product.append(data)
     
-    # Downloading the image 
+    # # Downloading the image 
     # try:
     #     pic = requests.get(foto, stream = True)
     # except:
